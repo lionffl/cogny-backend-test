@@ -1,7 +1,10 @@
 const { DATABASE_SCHEMA, DATABASE_URL, SHOW_PG_MONITOR } = require('./config');
 const massive = require('massive');
 const monitor = require('pg-monitor');
-const { fetchPopulation } = require('./app');
+const { fetchPopulation, 
+  getPopulationSum, 
+  filterByPeriod, 
+} = require('./helpers');
 
 // Call start
 (async () => {
@@ -65,18 +68,21 @@ const { fetchPopulation } = require('./app');
 
     try {
         await migrationUp();
-
-        data = await fetchPopulation()
+        
+        const yearsToFilter = [2020, 2019, 2018]
+        
+        const response = await fetchPopulation();
+        const { data, ...rest } = response;
         const result1 = await db[DATABASE_SCHEMA].api_data.insert({
-            doc_record: data,
+            doc_record: { data },
         })
         console.log('result1 >>>', result1);
-
-        //exemplo select
-        const result2 = await db[DATABASE_SCHEMA].api_data.find({
-            is_active: true
-        });
-        console.log('result2 >>>', result2);
+        
+        const filteredData = await filterByPeriod(data, yearsToFilter)
+        const populationSum1 = getPopulationSum(filteredData)
+        console.log(`Population by node: ${populationSum1}`)
+        
+        db.dropTable(DATABASE_SCHEMA.concat('.api_data'))
 
     } catch (e) {
         console.log(e.message)
