@@ -81,10 +81,10 @@ const { fetchPopulation,
         
         const filteredData = await filterByPeriod(data, yearsToFilter)
         const populationSum1 = getPopulationSum(filteredData)
-        console.log(`Population by node: ${populationSum1}`)
+        console.log(`Population sum from ${yearsToFilter} (NodeJS): ${populationSum1}`)
 
         const populationSum2 = await db.query(sumPopulationQuery, [yearsToFilter]);
-        console.log(`Population by pg: ${populationSum2[0].total_population}`)
+        console.log(`Population sum from ${yearsToFilter} (PG): ${populationSum2[0].total_population}`)
         
         db.dropTable(DATABASE_SCHEMA.concat('.api_data'))
 
