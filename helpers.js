@@ -21,7 +21,7 @@ function getPopulationSum(data) {
 }
 
 
-async function filterByPeriod(data, years) {
+function filterByPeriod(data, years) {
   const filteredData = data.filter((element) =>
     years.includes(element["ID Year"]),
   );

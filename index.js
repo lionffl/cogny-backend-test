@@ -70,8 +70,6 @@ const { fetchPopulation,
     try {
         await migrationUp();
         
-        const yearsToFilter = [2020, 2019, 2018]
-        
         const response = await fetchPopulation();
         const { data, ...rest } = response;
         const result1 = await db[DATABASE_SCHEMA].api_data.insert({
@@ -79,7 +77,8 @@ const { fetchPopulation,
         })
         console.log('result1 >>>', result1);
         
-        const filteredData = await filterByPeriod(data, yearsToFilter)
+        const yearsToFilter = [2020, 2019, 2018]
+        const filteredData = filterByPeriod(data, yearsToFilter)
         const populationSum1 = getPopulationSum(filteredData)
         console.log(`Population sum from ${yearsToFilter} (NodeJS): ${populationSum1}`)
 
