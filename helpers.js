@@ -28,9 +28,15 @@ async function filterByPeriod(data, years) {
   return filteredData;
 }
 
+const sumPopulationQuery = `
+        SELECT SUM((doc_element->>'Population')::integer) AS total_population
+        FROM lionffl.api_data, jsonb_array_elements(doc_record->'data') AS doc_element
+        WHERE (doc_element->>'Year')::integer = ANY($1)
+      `;
 
 module.exports = {
   fetchPopulation,
   getPopulationSum,
   filterByPeriod,
+  sumPopulationQuery
 };
